@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BakingApp</string>
+    <string name="card_view_recipe_button">Get Recipe</string>
+    <string name="card_view_servings_label">Servings:</string>
+    <string name="network_error_message">Error occurred. Please try later!!!!</string>
+    <string name="ingredients_title">Ingredients</string>
+    <string name="ingredients_description">%1$s - %2$s %3$s</string>
+    <string name="steps_title"> Procedure</string>
+    <string name="step_description">%1$d. %2$s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

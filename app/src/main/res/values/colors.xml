@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#8d6e63</color>
+    <color name="colorPrimaryDark">#5f4339</color>
+    <color name="colorPrimaryLight">#be9c91</color>
+    <color name="colorAccent">#ffb74d</color>
+    <color name="recipe_card_bg">#efebe9</color>
+    <color name="recipe_detail_bg">#cfd8dc</color>
+    <color name="ingredients_bg">#ede7f6</color>
+</resources>
