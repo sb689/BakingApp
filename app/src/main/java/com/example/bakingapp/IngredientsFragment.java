@@ -32,7 +32,6 @@ public class IngredientsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         mDataBinding = FragmentIngredientsBinding.inflate(inflater,container,false);
-        mIngredient = RecipeDetailActivity.getRecipe().getIngredients();
 
         IngredientsAdapter adapter = new IngredientsAdapter(mIngredient);
         mDataBinding.rvIngredientDetail.setAdapter(adapter);
