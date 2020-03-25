@@ -3,6 +3,7 @@ package com.example.bakingapp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import android.view.ViewGroup;
 
 import com.example.bakingapp.databinding.FragmentStepBinding;
 import com.example.bakingapp.model.Step;
+import com.example.bakingapp.utiils.DisplayUtils;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
 
 import com.google.android.exoplayer2.Player;
@@ -30,6 +33,7 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.spherical.SphericalGLSurfaceView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
@@ -43,10 +47,13 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
 
     private static final String TAG = StepFragment.class.getName();
     private static final String STEP_BUNDLE = "step_bundle";
+    private static final String EXOPLAYER_POSITION = "exoplayer_position";
+    private static final String EXOPLAYER_STATE = "exoplayer_state";
 
     private FragmentStepBinding mDataBinding;
     private SimpleExoPlayer mSimpleExoPlayer;
     private Step mStep;
+    private boolean mTabletView;
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private PlayerView mPlayerView;
@@ -55,6 +62,10 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
 
     public void setmStep(Step mStep) {
         this.mStep = mStep;
+    }
+
+    public void setmTabletView(boolean mTabletView) {
+        this.mTabletView = mTabletView;
     }
 
     public StepFragment() {
@@ -66,38 +77,35 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         mDataBinding = FragmentStepBinding.inflate(inflater,container,false);
         mPlayerView = mDataBinding.videoExoView;
+        Log.d(TAG, ":::::::::::::: inside onCreate, sdk version is =" + Util.SDK_INT);
         if(savedInstanceState != null){
             mStep = savedInstanceState.getParcelable(STEP_BUNDLE);
+        }else {
+            mDataBinding.tvStepDetailDescription.setText(mStep.getDescription());
         }
-        mDataBinding.tvStepDetailDescription.setText(mStep.getDescription());
-            if (mStep.getVideoURL() != null ||
-                    !mStep.getVideoURL().isEmpty() ||
-                    mStep.getThumbnailURL() != null ||
-                    !mStep.getThumbnailURL().isEmpty()) {
-                initializePlayer();
-            }
-            InitializeMediaSession();
+        //initializePlayer();
+        InitializeMediaSession();
 
         return mDataBinding.getRoot();
     }
 
-    private void getScreenSize()
-    {
-        /*the display matrix code is copied from stackOverflow
-         */
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int mScreenHeight = displayMetrics.heightPixels;
-        int mScreenWidth = displayMetrics.widthPixels;
-    }
+
 
 
     private void initializePlayer(){
+        if (mStep.getVideoURL() == null &&
+                mStep.getVideoURL().isEmpty() &&
+                mStep.getThumbnailURL() == null &&
+                mStep.getThumbnailURL().isEmpty()) {
+            return;
+        }
         if(mSimpleExoPlayer == null) {
 
             mSimpleExoPlayer = new SimpleExoPlayer.Builder(getActivity()).build();
+            //mSimpleExoPlayer = new SimpleExoPlayer.Builder(getContext()).build();
             mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
             Configuration config = getResources().getConfiguration();
             updateViewWithConfigurationChange(config);
@@ -154,7 +162,6 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
                     1f);
         }
         mMediaSession.setPlaybackState(mStateBuilder.build());
-
     }
 
 
@@ -183,27 +190,43 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         }
     }
 
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        updateViewWithConfigurationChange(newConfig);
-        // Checks the orientation of the screen
 
-    }
 
     private void updateViewWithConfigurationChange(Configuration newConfig){
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getScreenSize();
-            mDataBinding.videoExoView.getLayoutParams().height = mScreenHeight;
+        Log.d(TAG, ":::::::::::::::::::::::::: inside updateViewWithConfigurationChange, mTabletView = " + mTabletView);
+        DisplayUtils.getScreenSize(getActivity());
 
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && !mTabletView) {
+            Log.d(TAG, ":::::::::::::::::::::::::: inside ORIENTATION_LANDSCAPE && !mTabletView");
+            mDataBinding.videoExoView.getLayoutParams().height = DisplayUtils.mScreenHeight;
         }
-        else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            mDataBinding.videoExoView.getLayoutParams().height = 600;
+        else if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && mTabletView){
+            Log.d(TAG, ":::::::::::::::::::::::::: inside .ORIENTATION_LANDSCAPE && mTabletView");
+            int height = DisplayUtils.mScreenHeight -500;
+            int width = DisplayUtils.mScreenWidth-400;
+            mDataBinding.videoExoView.getLayoutParams().height = height;
+            mDataBinding.videoExoView.getLayoutParams().width= width;
+        }
+        else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && mTabletView){
+            int height = DisplayUtils.mScreenHeight / 2;
+            int width = DisplayUtils.mScreenWidth-400;
+            mDataBinding.videoExoView.getLayoutParams().height = height;
+            mDataBinding.videoExoView.getLayoutParams().width= width;
+        }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && !mTabletView){
+            int height = 500;
+            int width = DisplayUtils.mScreenWidth;
+            mDataBinding.videoExoView.getLayoutParams().height = height;
+            mDataBinding.videoExoView.getLayoutParams().width= width;
         }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(STEP_BUNDLE, mStep);
+        if(mSimpleExoPlayer != null){
+            outState.putLong(EXOPLAYER_POSITION, mSimpleExoPlayer.getCurrentPosition());
+            outState.putBoolean(EXOPLAYER_STATE, mSimpleExoPlayer.getPlayWhenReady());
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -211,6 +234,7 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     public void onStart() {
         super.onStart();
         if (Util.SDK_INT > 23) {
+            Log.d(TAG, "::::::::::::::::::; called initializePlayer from onStart");
             initializePlayer();
             if (mPlayerView != null) {
                 mPlayerView.onResume();
@@ -222,17 +246,20 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     public void onResume() {
         super.onResume();
         if (Util.SDK_INT <= 23 || mSimpleExoPlayer == null) {
+            Log.d(TAG, "::::::::::::::::::; called initializePlayer from onResume");
             initializePlayer();
             if (mPlayerView != null) {
                 mPlayerView.onResume();
             }
         }
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
         if (Util.SDK_INT <= 23) {
+            Log.d(TAG, "::::::::::::::::::; release player from onPause");
             if (mPlayerView != null) {
                 mPlayerView.onPause();
             }
@@ -244,6 +271,7 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     public void onStop() {
         super.onStop();
         if (Util.SDK_INT > 23) {
+            Log.d(TAG, "::::::::::::::::::; release player from onPause");
             if (mPlayerView != null) {
                 mPlayerView.onPause();
             }
@@ -256,12 +284,16 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         mSimpleExoPlayer.removeListener(this);
         mSimpleExoPlayer.release();
         mSimpleExoPlayer = null;
+        mMediaSession.setActive(false);
     }
 
     @Override
     public void onDestroy() {
-
         super.onDestroy();
+      if(getActivity().isChangingConfigurations()){
+          return;
+      }
+      releasePlayer();
     }
 
 }

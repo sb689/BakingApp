@@ -74,10 +74,15 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         }
 
         void bindData(int position){
-             String text = mDataBinding.getRoot().getContext().getString(R.string.step_description, (position+1), mSteps[position].getShortDescription());
+             String text;
+             if(position == 0){
+                 text = mSteps[position].getDescription();
+             }else {
+                 text = mDataBinding.getRoot().getContext().getString(R.string.step_description, position, mSteps[position].getShortDescription());
+             }
              mDataBinding.tvStepShortDesc.setText(text);
+         }
 
-        }
 
         @Override
         public void onClick(View v) {

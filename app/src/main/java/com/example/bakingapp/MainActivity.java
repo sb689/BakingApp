@@ -7,15 +7,20 @@ import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+
 import com.example.bakingapp.databinding.ActivityMainBinding;
 import com.example.bakingapp.model.Recipe;
+import com.example.bakingapp.utiils.DisplayUtils;
 import com.example.bakingapp.utiils.NetworkUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,24 +42,48 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RECIPE_LOADER_ID = 14;
     public static final String BUNDLE_EXTRA = "recipe_item";
+    public static final int GRID_SPAN_COUNT = 3;
+
 
     private ActivityMainBinding mDataBinding;
     private RecyclerView mRecyclerView;
     private RecipeAdapter mRecipeAdapter;
+    private boolean mTabletView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        DisplayUtils.getScreenSize(this);
         mRecyclerView = mDataBinding.rvRecipes;
-        mRecipeAdapter = new RecipeAdapter(this);
+        FrameLayout frameLayout = mDataBinding.frameLayoutTabletMainView;
+        if(frameLayout == null){
+            mTabletView = false;
+        }
+        else{
+            mTabletView = true;
+        }
+        mRecipeAdapter = new RecipeAdapter(this, mTabletView);
         mRecyclerView.setAdapter(mRecipeAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(RecyclerView.VERTICAL);
-        layoutManager.setReverseLayout(false);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setHasFixedSize(true);
+
+        if(mTabletView)
+        {
+            GridLayoutManager layoutManager = new GridLayoutManager(this, GRID_SPAN_COUNT);
+            layoutManager.setReverseLayout(false);
+            layoutManager.setOrientation(GridLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setHasFixedSize(true);
+
+        }
+        else{
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            layoutManager.setOrientation(RecyclerView.VERTICAL);
+            layoutManager.setReverseLayout(false);
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setHasFixedSize(true);
+        }
 
         LoaderManager.getInstance(this).initLoader(RECIPE_LOADER_ID, null, this);
     }
@@ -153,5 +182,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         startActivity(intent);
 
     }
+
+
 }
 

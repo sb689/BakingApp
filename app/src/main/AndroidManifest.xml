@@ -12,11 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".StepDetailActivity"
-            android:parentActivityName=".RecipeDetailActivity"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize">
+            android:parentActivityName=".RecipeDetailActivity">
+<!--            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"-->
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RecipeDetailActivity" />
+                android:value=".RecipeDetailActivity"
+                />
         </activity>
         <activity
             android:name=".RecipeDetailActivity"
@@ -26,6 +28,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
         <activity android:name=".MainActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

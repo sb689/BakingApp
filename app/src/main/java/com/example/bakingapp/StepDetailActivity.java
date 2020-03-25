@@ -25,6 +25,8 @@ public class StepDetailActivity extends AppCompatActivity
     private Recipe mRecipe;
     private Bundle mBundle;
     private int mStepPosition;
+    private boolean mTabletView;
+
 
 
     @Override
@@ -60,9 +62,11 @@ public class StepDetailActivity extends AppCompatActivity
         showButtons();
 
         mStepPosition = mBundle.getInt(RecipeDetailActivity.BUNDLE_EXTRA_STEP_POSITION);
+        mTabletView = mBundle.getBoolean(RecipeDetailActivity.BUNDLE_EXTRA_STEP_TABLET_VIEW);
         Step step = mRecipe.getSteps()[mStepPosition];
         StepFragment stepFragment = new StepFragment();
         stepFragment.setmStep(step);
+        stepFragment.setmTabletView(mTabletView);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -71,7 +75,7 @@ public class StepDetailActivity extends AppCompatActivity
         checkButtonStates(mStepPosition);
     }
 
-    private void showIngredientDetail()
+    public void showIngredientDetail()
     {
         hideButtons();
         IngredientsFragment ingredientsFragment = new IngredientsFragment();
@@ -88,6 +92,7 @@ public class StepDetailActivity extends AppCompatActivity
         Step step = mRecipe.getSteps()[mStepPosition];
         StepFragment stepFragment = new StepFragment();
         stepFragment.setmStep(step);
+        stepFragment.setmTabletView(mTabletView);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
