@@ -1,5 +1,6 @@
 package com.example.bakingapp;
 
+import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.example.bakingapp.databinding.ReceipeCardItemBinding;
 import com.example.bakingapp.model.Recipe;
 import com.example.bakingapp.utiils.DisplayUtils;
 
+
 import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHolder>{
@@ -22,14 +24,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     private List<Recipe> mRecipeList;
     private RecipeAdapterClickListener mListener;
     private boolean mTabletView;
+    private Activity mActivity;
 
     public List<Recipe> getmRecipeList() {
         return mRecipeList;
     }
 
-    public RecipeAdapter(RecipeAdapterClickListener listener, boolean isTabletView){
+    public RecipeAdapter(RecipeAdapterClickListener listener, boolean isTabletView, Activity activity){
         mListener = listener;
         mTabletView = isTabletView;
+        mActivity = activity;
     }
 
     public void setmRecipeList(List<Recipe> mRecipeList) {
@@ -44,7 +48,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     @NonNull
     @Override
     public RecipeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         ReceipeCardItemBinding itemBinding = ReceipeCardItemBinding.inflate(layoutInflater,parent,false);
         return new RecipeHolder(itemBinding);
@@ -65,7 +68,11 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     }
 
     private int calculateCardWidth(){
+        DisplayUtils.getScreenSize(mActivity);
         int cardWidth = DisplayUtils.mScreenWidth / MainActivity.GRID_SPAN_COUNT;
+        Log.d(TAG, ":::::::::::::::inside calculateCardWidth, mScreenWidth = " + DisplayUtils.mScreenWidth +
+                " GRID_SPAN_COUNT  = " + MainActivity.GRID_SPAN_COUNT +
+                "cardWidth = " + cardWidth);
         return cardWidth;
     }
 

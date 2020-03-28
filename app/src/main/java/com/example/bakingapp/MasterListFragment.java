@@ -64,7 +64,7 @@ public class MasterListFragment extends Fragment implements StepsAdapter.StepCli
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.d(TAG, "::::::::::::::::::::::::::::;inside masterList fragment onCreate");
+
         FragmentMasterListBinding binding = FragmentMasterListBinding.inflate(inflater, container, false);
 
         mRecipe = RecipeDetailActivity.getRecipe();

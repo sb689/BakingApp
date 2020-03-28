@@ -12,22 +12,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.bakingapp.databinding.ActivityMainBinding;
 import com.example.bakingapp.model.Recipe;
-import com.example.bakingapp.utiils.DisplayUtils;
+
 import com.example.bakingapp.utiils.NetworkUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-
-
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,34 +39,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int RECIPE_LOADER_ID = 14;
-    public static final String BUNDLE_EXTRA = "recipe_item";
     public static final int GRID_SPAN_COUNT = 3;
-
 
     private ActivityMainBinding mDataBinding;
     private RecyclerView mRecyclerView;
     private RecipeAdapter mRecipeAdapter;
-    private boolean mTabletView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        DisplayUtils.getScreenSize(this);
+
         mRecyclerView = mDataBinding.rvRecipes;
         FrameLayout frameLayout = mDataBinding.frameLayoutTabletMainView;
+
+        boolean isTabletView;
         if(frameLayout == null){
-            mTabletView = false;
+            isTabletView = false;
         }
         else{
-            mTabletView = true;
+            isTabletView = true;
         }
-        mRecipeAdapter = new RecipeAdapter(this, mTabletView);
+        mRecipeAdapter = new RecipeAdapter(this, isTabletView, this);
         mRecyclerView.setAdapter(mRecipeAdapter);
 
-        if(mTabletView)
+        if(isTabletView)
         {
             GridLayoutManager layoutManager = new GridLayoutManager(this, GRID_SPAN_COUNT);
             layoutManager.setReverseLayout(false);
@@ -174,13 +172,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
        // Log.d(TAG, ":::::::::::::::::::recipe clicked : " + position);
         Bundle bundle = new Bundle();
         Recipe recipe = mRecipeAdapter.getmRecipeList().get(position);
-        bundle.putParcelable(BUNDLE_EXTRA, recipe);
-
+        bundle.putParcelable(getString(R.string.bundle_extra_recipe_obj), recipe);
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtras(bundle);
 
+        //update shared pref
+        saveRecipe(recipe);
+        // start intent
         startActivity(intent);
+    }
 
+    private void saveRecipe(Recipe recipe){
+        Gson gson = new Gson();
+        String recipeStr = gson.toJson(recipe);
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_pref_id) , this.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.shared_pref_recipe_key), recipeStr);
+        editor.apply();
     }
 
 

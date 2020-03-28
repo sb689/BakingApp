@@ -11,15 +11,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.LinearLayout;
 
-
 import com.example.bakingapp.databinding.ActivityRecipeDetailBinding;
-import com.example.bakingapp.model.Ingredient;
 import com.example.bakingapp.model.Recipe;
 import com.example.bakingapp.model.Step;
-import com.example.bakingapp.utiils.DisplayUtils;
+import com.example.bakingapp.widget.RecipeWidgetService;
+
 
 public class RecipeDetailActivity extends AppCompatActivity implements MasterListFragment.IngredientsClickedListener,
                 MasterListFragment.StepClickedListenerForward{
@@ -27,15 +25,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
 
     private ActivityRecipeDetailBinding mDataBinding;
     private static final String TAG = RecipeDetailActivity.class.getName();
-    public static final String BUNDLE_EXTRA_RECIPE_DETAIL = "bundle_extra_recipe_detail";
-    public static final String BUNDLE_EXTRA_KEY = "extra_key";
-    public static final String BUNDLE_EXTRA_INGREDIENT_VALUE = "ingredient";
-    public static final String BUNDLE_EXTRA_STEP_VALUE = "step";
-    public static final String BUNDLE_EXTRA_STEP_POSITION = "step_position";
-    public static final String BUNDLE_EXTRA_STEP_TABLET_VIEW = "step_tablet";
 
     private static Recipe mRecipe;
     private boolean mTabletView;
+    private int mStepPosition;
 
 
     public static Recipe getRecipe(){
@@ -45,14 +38,13 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if(savedInstanceState == null) {
             Intent intent = getIntent();
             Bundle bundle = intent.getExtras();
-            mRecipe = bundle.getParcelable(MainActivity.BUNDLE_EXTRA);
+            mRecipe = bundle.getParcelable(getString(R.string.bundle_extra_recipe_obj));
         }else{
-
-            mRecipe = savedInstanceState.getParcelable(BUNDLE_EXTRA_RECIPE_DETAIL);
+            mRecipe = savedInstanceState.getParcelable(getString(R.string.bundle_extra_recipe_obj));
+            mStepPosition = savedInstanceState.getInt(getString(R.string.bundle_extra_step_position));
         }
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_recipe_detail);
 
@@ -66,39 +58,33 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
             LinearLayout linearLayout = mDataBinding.linearLayoutRecipeDetailTablet;
 
             if (linearLayout == null) {
-                Log.d(TAG, ":::::::::::::::::::::::::inside recipeDetailActivity, tabletLayout is null");
                 mTabletView = false;
+
             } else {
                 mTabletView = true;
-                Log.d(TAG, ":::::::::::::::::::::::::inside recipeDetailActivity, tabletLayout is not null");
-                showIngredientDetail();
+               if(savedInstanceState == null){
+                   showIngredientDetail();
+               }
             }
         }catch (Exception e){
             Log.d(TAG, e.getMessage());
         }
+        RecipeWidgetService.startActionUpdateWidget(this, mRecipe);
     }
 
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mRecipe =  savedInstanceState.getParcelable(BUNDLE_EXTRA_RECIPE_DETAIL);
-    }
 
     @Override
     public void ingredientsClicked() {
 
         if(!mTabletView) {
-            Log.d(TAG, "::::::::::::::; inside ingredientsClicked, mTableVIew is false");
             Intent intent = new Intent(this, StepDetailActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putParcelable(BUNDLE_EXTRA_RECIPE_DETAIL, mRecipe);
-            bundle.putString(BUNDLE_EXTRA_KEY, BUNDLE_EXTRA_INGREDIENT_VALUE);
+            bundle.putParcelable(getString(R.string.bundle_extra_recipe_obj), mRecipe);
+            bundle.putString(getString(R.string.bundle_extra_key), getString(R.string.bundle_extra_value_ingredient));
             intent.putExtras(bundle);
             startActivity(intent);
         }else{
             //when the view is tabletView
-            Log.d(TAG, "::::::::::::::; inside ingredientsClicked, mTableVIew is true");
             showIngredientDetail();
         }
     }
@@ -110,10 +96,9 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
         if(!mTabletView) {
             Intent intent = new Intent(this, StepDetailActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putParcelable(BUNDLE_EXTRA_RECIPE_DETAIL, mRecipe);
-            bundle.putString(BUNDLE_EXTRA_KEY, BUNDLE_EXTRA_STEP_VALUE);
-            bundle.putInt(BUNDLE_EXTRA_STEP_POSITION, position);
-            bundle.putBoolean(BUNDLE_EXTRA_STEP_TABLET_VIEW, mTabletView);
+            bundle.putParcelable(getString(R.string.bundle_extra_recipe_obj), mRecipe);
+            bundle.putString(getString(R.string.bundle_extra_key), getString(R.string.bundle_extra_value_step));
+            bundle.putInt(getString(R.string.bundle_extra_step_position), position);
             intent.putExtras(bundle);
             startActivity(intent);
         }else{
@@ -125,7 +110,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
 
-        outState.putParcelable(BUNDLE_EXTRA_RECIPE_DETAIL, mRecipe);
+        outState.putParcelable(getString(R.string.bundle_extra_recipe_obj), mRecipe);
+        outState.putInt(getString(R.string.bundle_extra_step_position), mStepPosition);
         super.onSaveInstanceState(outState);
     }
 
@@ -143,10 +129,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
 
     private void showStepDetail(int position){
 
+        mStepPosition = position;
         Step step = mRecipe.getSteps()[position];
         StepFragment stepFragment = new StepFragment();
         stepFragment.setmStep(step);
-        stepFragment.setmTabletView(mTabletView);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -164,14 +150,6 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
                 .replace(mDataBinding.containerStepsSw600.getId(), ingredientsFragment)
                 .commit();
     }
-
-    private void setContainerSize(){
-        DisplayUtils.getScreenSize(this);
-        int width = DisplayUtils.mScreenWidth * 2/3;
-        mDataBinding.containerStepsSw600.getLayoutParams().width = width;
-
-    }
-
 
 
 }
