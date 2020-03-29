@@ -24,7 +24,6 @@
             android:layout_height="30dp"
             android:background="@drawable/ic_chevron_right_24px"
             android:contentDescription="@string/next_step_button_content_desc"
-            android:text="@string/next_step_button_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:onClick="onForwardClicked"/>
@@ -33,7 +32,6 @@
             android:id="@+id/button_prev_step"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:text="@string/previous_step_button_text"
             android:background="@drawable/ic_chevron_left_24px"
            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

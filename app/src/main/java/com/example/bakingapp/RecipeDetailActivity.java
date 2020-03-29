@@ -69,7 +69,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
         }catch (Exception e){
             Log.d(TAG, e.getMessage());
         }
-        RecipeWidgetService.startActionUpdateWidget(this, mRecipe);
+        RecipeWidgetService.startActionUpdateWidget(this);
     }
 
 

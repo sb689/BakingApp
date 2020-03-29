@@ -75,8 +75,6 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         }
         if(mSimpleExoPlayer == null) {
             mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
-//            Configuration config = getResources().getConfiguration();
-//            updateViewWithConfigurationChange(config);
             String recipeUriStr = mStep.getVideoURL();
             if(recipeUriStr.isEmpty()){
                 recipeUriStr = mStep.getThumbnailURL();
@@ -93,7 +91,6 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
                 mSimpleExoPlayer.seekTo(mPlayerPosition);
                 mPlayerView.setPlayer(mSimpleExoPlayer);
             }
-
         }
     }
 
@@ -106,31 +103,6 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         return videoSource;
     }
 
-//    private void updateViewWithConfigurationChange(Configuration newConfig){
-//
-//        DisplayUtils.getScreenSize(getActivity());
-//
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && !mTabletView) {
-//            mDataBinding.videoExoView.getLayoutParams().height = DisplayUtils.mScreenHeight - 300;
-//        }
-//        else if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && mTabletView){
-//            int height = DisplayUtils.mScreenHeight -500;
-//            int width = DisplayUtils.mScreenWidth-400;
-//            mDataBinding.videoExoView.getLayoutParams().height = height;
-//            mDataBinding.videoExoView.getLayoutParams().width= width;
-//        }
-//        else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && mTabletView){
-//            int height = DisplayUtils.mScreenHeight / 2;
-//            int width = DisplayUtils.mScreenWidth-400;
-//            mDataBinding.videoExoView.getLayoutParams().height = height;
-//            mDataBinding.videoExoView.getLayoutParams().width= width;
-//        }else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT && !mTabletView){
-//            int height = DisplayUtils.mScreenHeight / 2;
-//            int width = DisplayUtils.mScreenWidth;
-//            mDataBinding.videoExoView.getLayoutParams().height = height;
-//            mDataBinding.videoExoView.getLayoutParams().width= width;
-//        }
-//    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

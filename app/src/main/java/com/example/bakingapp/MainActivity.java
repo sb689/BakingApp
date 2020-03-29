@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void RecipeClicked(int position) {
-       // Log.d(TAG, ":::::::::::::::::::recipe clicked : " + position);
+
         Bundle bundle = new Bundle();
         Recipe recipe = mRecipeAdapter.getmRecipeList().get(position);
         bundle.putParcelable(getString(R.string.bundle_extra_recipe_obj), recipe);

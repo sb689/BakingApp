@@ -70,9 +70,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeHold
     private int calculateCardWidth(){
         DisplayUtils.getScreenSize(mActivity);
         int cardWidth = DisplayUtils.mScreenWidth / MainActivity.GRID_SPAN_COUNT;
-        Log.d(TAG, ":::::::::::::::inside calculateCardWidth, mScreenWidth = " + DisplayUtils.mScreenWidth +
-                " GRID_SPAN_COUNT  = " + MainActivity.GRID_SPAN_COUNT +
-                "cardWidth = " + cardWidth);
         return cardWidth;
     }
 

@@ -27,6 +27,7 @@
     <string name="bundle_step">bundle_step</string>
 
 <!--    Widget-->
-    <string name="appwidget_text">EXAMPLE</string>
+    <string name="appwidget_text">Displays ingredients list for a recipe</string>
     <string name="add_widget">Add widget</string>
+    <string name="widget_empty_msg">No ingredients to show</string>
 </resources>
