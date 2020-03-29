@@ -43,7 +43,7 @@ public class ExoPlayerViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         releaseExoPlayer();
-       // ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
+
     }
 
     private void setupPlayer(String recipeUriStr) {

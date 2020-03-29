@@ -6,12 +6,17 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bakingapp.databinding.FragmentStepBinding;
 import com.example.bakingapp.model.Step;
+import com.example.bakingapp.viewmodel.ExoPlayerViewModel;
+import com.example.bakingapp.viewmodel.ExoPlayerViewModelFactory;
 import com.google.android.exoplayer2.ExoPlayer;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -83,13 +88,23 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
                 return;
 
             if (mSimpleExoPlayer == null){
-                mSimpleExoPlayer = new SimpleExoPlayer.Builder(getContext()).build();
-                Uri recipeUri = Uri.parse(recipeUriStr);
-                MediaSource mediaSource = buildMediaSource(recipeUri);
-                mSimpleExoPlayer.prepare(mediaSource);
-                mSimpleExoPlayer.setPlayWhenReady(mPlayerState);
-                mSimpleExoPlayer.seekTo(mPlayerPosition);
-                mPlayerView.setPlayer(mSimpleExoPlayer);
+//                mSimpleExoPlayer = new SimpleExoPlayer.Builder(getContext()).build();
+//                Uri recipeUri = Uri.parse(recipeUriStr);
+//                MediaSource mediaSource = buildMediaSource(recipeUri);
+//                mSimpleExoPlayer.prepare(mediaSource);
+//                mSimpleExoPlayer.setPlayWhenReady(mPlayerState);
+//                mSimpleExoPlayer.seekTo(mPlayerPosition);
+//                mPlayerView.setPlayer(mSimpleExoPlayer);
+                ExoPlayerViewModelFactory factory = new ExoPlayerViewModelFactory(getContext(), recipeUriStr);
+                final ExoPlayerViewModel viewModel = new ViewModelProvider(this, factory).get(ExoPlayerViewModel.class);
+                viewModel.getSimpleExoPlayer().observe(this, new Observer<SimpleExoPlayer>() {
+                    @Override
+                    public void onChanged(SimpleExoPlayer simpleExoPlayer) {
+                        viewModel.getSimpleExoPlayer().removeObserver(this);
+                        mPlayerView.setPlayer(simpleExoPlayer);
+                    }
+                });
+
             }
         }
     }
@@ -121,12 +136,6 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     @Override
     public void onStop() {
         super.onStop();
-      if(mSimpleExoPlayer != null)
-        {
-            mPlayerState = mSimpleExoPlayer.getPlayWhenReady();
-            mPlayerPosition = mSimpleExoPlayer.getContentPosition();
-            releaseExoPlayer();
-        }
 
     }
 

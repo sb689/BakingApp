@@ -2,6 +2,7 @@ package com.example.bakingapp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
@@ -10,6 +11,7 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.IdlingResource;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +24,7 @@ import com.example.bakingapp.databinding.ActivityMainBinding;
 import com.example.bakingapp.model.Recipe;
 
 import com.example.bakingapp.utiils.NetworkUtils;
+import com.example.bakingapp.utiils.SimpleIdlingResource;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,6 +47,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private ActivityMainBinding mDataBinding;
     private RecyclerView mRecyclerView;
     private RecipeAdapter mRecipeAdapter;
+
+    @Nullable private SimpleIdlingResource mIdlingResource;
+
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource(){
+        if(mIdlingResource == null){
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
 
 
     @Override
@@ -110,6 +124,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
+                if(mIdlingResource != null){
+                    mIdlingResource.setIdleState(false);
+                }
                 if(mRecipes != null){
                     deliverResult(mRecipes);
                 }else {
@@ -153,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onLoadFinished(@NonNull Loader<List<Recipe>> loader, List<Recipe> data) {
                 mDataBinding.pbLoading.setVisibility(View.INVISIBLE);
+                if(mIdlingResource != null){
+                    mIdlingResource.setIdleState(true);
+                }
                 if(data == null){
                     showErrorMessage();
                 }else{

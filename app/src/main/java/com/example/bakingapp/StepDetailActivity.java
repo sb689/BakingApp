@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -24,7 +25,7 @@ public class StepDetailActivity extends AppCompatActivity
     private ActivityStepDetailBinding mDataBinding;
     private Recipe mRecipe;
     private int mStepPosition;
-    private boolean mTabletView;
+
 
 
     @Override
@@ -32,7 +33,8 @@ public class StepDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_step_detail);
 
-        mTabletView = getResources().getBoolean(R.bool.isLarge);
+        boolean isTabletView = getResources().getBoolean(R.bool.isLarge);
+
 
         if(savedInstanceState == null) {
             Intent intent = getIntent();
@@ -48,10 +50,13 @@ public class StepDetailActivity extends AppCompatActivity
                 mStepPosition = bundle.getInt(getString(R.string.bundle_extra_step_position));
                 showStepDetail();
             }
+
         }else{
             mStepPosition =  savedInstanceState.getInt(getString(R.string.bundle_extra_step_position));
             mRecipe = savedInstanceState.getParcelable(getString(R.string.bundle_extra_recipe_obj));
+
         }
+        checkButtonStates(mStepPosition);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!= null){
@@ -71,8 +76,6 @@ public class StepDetailActivity extends AppCompatActivity
     }
 
     private void showStepDetail(){
-
-        showButtons();
 
         Step step = mRecipe.getSteps()[mStepPosition];
         StepFragment stepFragment = new StepFragment();
@@ -137,10 +140,6 @@ public class StepDetailActivity extends AppCompatActivity
        updateStepFragment(mStepPosition);
     }
 
-    private void showButtons(){
-        mDataBinding.buttonNextStep.setVisibility(View.VISIBLE);
-        mDataBinding.buttonPrevStep.setVisibility(View.VISIBLE);
-    }
 
     private void hideButtons(){
         mDataBinding.buttonNextStep.setVisibility(View.GONE);

@@ -29,7 +29,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.488"
-                tools:text="Ingredients" />
+                tools:text="@string/ingredients_title" />
 
             <ImageView
                 android:layout_width="30dp"
