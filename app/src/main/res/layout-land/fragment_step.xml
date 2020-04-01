@@ -18,7 +18,10 @@
         android:layout_width="match_parent"
         android:id="@+id/video_exo_view"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:fastforward_increment="2000"
+        app:rewind_increment="2000"
+        app:resize_mode="fit"/>
 
     <TextView
         android:layout_width="match_parent"

@@ -2,6 +2,7 @@ package com.example.bakingapp;
 
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,13 +19,13 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import java.net.SocketImpl;
 
 
 /**
@@ -33,8 +34,7 @@ import java.net.SocketImpl;
 public class StepFragment extends Fragment implements ExoPlayer.EventListener {
 
     private static final String TAG = StepFragment.class.getName();
-    private static final String BUNDLE_EXOPLAYER_POSITION = "exoplayer_position";
-    private static final String  BUNDLE_EXOPLAYER_STATE = "exoplayer_state";
+
 
     private FragmentStepBinding mDataBinding;
     private SimpleExoPlayer mSimpleExoPlayer;
@@ -62,8 +62,8 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
 
         if(savedInstanceState != null){
             mStep = savedInstanceState.getParcelable(getString(R.string.bundle_step));
-            mPlayerPosition = savedInstanceState.getLong(BUNDLE_EXOPLAYER_POSITION);
-            mPlayerState = savedInstanceState.getBoolean(BUNDLE_EXOPLAYER_STATE);
+            mPlayerPosition = savedInstanceState.getLong(getString(R.string.bundle_exoplayer_position));
+            mPlayerState = savedInstanceState.getBoolean(getString(R.string.bundle_exoplayer_state));
         }
         mDataBinding.tvStepDetailDescription.setText(mStep.getDescription());
         return mDataBinding.getRoot();
@@ -77,7 +77,7 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
             return;
         }
         if(mSimpleExoPlayer == null) {
-            mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
+           // mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
             String recipeUriStr = mStep.getVideoURL();
             if(recipeUriStr.isEmpty()){
                 recipeUriStr = mStep.getThumbnailURL();
@@ -86,8 +86,16 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
                 return;
 
             if (mSimpleExoPlayer == null){
-                mSimpleExoPlayer = new SimpleExoPlayer.Builder(getContext()).build();
+
                 Uri recipeUri = Uri.parse(recipeUriStr);
+
+                DefaultTrackSelector trackSelector = new DefaultTrackSelector(getContext());
+                trackSelector.setParameters(
+                        trackSelector.buildUponParameters().setMaxVideoSizeSd());
+                SimpleExoPlayer.Builder builder = new SimpleExoPlayer.Builder(getContext());
+                builder.setTrackSelector(trackSelector);
+                mSimpleExoPlayer = builder.build();
+
                 MediaSource mediaSource = buildMediaSource(recipeUri);
                 mSimpleExoPlayer.prepare(mediaSource);
                 mSimpleExoPlayer.setPlayWhenReady(mPlayerState);
@@ -106,36 +114,67 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         return videoSource;
     }
 
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(getString(R.string.bundle_step), mStep);
-        outState.putLong(BUNDLE_EXOPLAYER_POSITION, mPlayerPosition);
-        outState.putBoolean(BUNDLE_EXOPLAYER_STATE, mPlayerState);
+        if(Util.SDK_INT < Build.VERSION_CODES.P) {
+            savePlayerState();
+        }
+        outState.putLong(getString(R.string.bundle_exoplayer_position), mPlayerPosition);
+        outState.putBoolean(getString(R.string.bundle_exoplayer_state), mPlayerState);
         super.onSaveInstanceState(outState);
     }
+
+    private void savePlayerState() {
+        if (mSimpleExoPlayer != null) {
+            mPlayerPosition = mSimpleExoPlayer.getContentPosition();
+            mPlayerState = mSimpleExoPlayer.getPlayWhenReady();
+        }
+    }
+
+
 
     @Override
     public void onStart() {
         super.onStart();
-        initializePlayer();
+        if(Util.SDK_INT >= 23) {
+            initializePlayer();
+        }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Util.SDK_INT < 23 ){
+            if(mSimpleExoPlayer == null) {
+                initializePlayer();
+            }
+        }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(Util.SDK_INT < 23 ){
+            if(mSimpleExoPlayer != null){
+                releaseExoPlayer();
+            }
+        }
+    }
 
     @Override
     public void onStop() {
         super.onStop();
-        if(mSimpleExoPlayer != null){
-            mPlayerPosition = mSimpleExoPlayer.getContentPosition();
-            mPlayerState = mSimpleExoPlayer.getPlayWhenReady();
+        if(Util.SDK_INT >= 23 && mSimpleExoPlayer != null){
+            if(Util.SDK_INT >= Build.VERSION_CODES.P){
+                savePlayerState();
+            }
             releaseExoPlayer();
         }
-
     }
 
     private void releaseExoPlayer(){
-        mSimpleExoPlayer.stop();
+       mSimpleExoPlayer.stop();
         mSimpleExoPlayer.release();
         mSimpleExoPlayer = null;
     }

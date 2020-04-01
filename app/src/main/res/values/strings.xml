@@ -25,6 +25,8 @@
     <string name="next_step_button_content_desc">Get the details of next step</string>
     <string name="prev_step_button_content_desc">Get the details of previous step</string>
     <string name="bundle_step">bundle_step</string>
+    <string name="bundle_exoplayer_position">exoplayer_position</string>
+    <string name="bundle_exoplayer_state">exoplayer_state</string>
 
 <!--    Widget-->
     <string name="appwidget_text">Displays ingredients list for a recipe</string>
