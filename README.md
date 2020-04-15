@@ -12,10 +12,10 @@ This is a baking recipe application developed for the Android platform as part o
 - Has a companion home screen widget.
 - The widget displays the ingredient list for the desired recipe.
 
-##Why this Project?
+## Why this Project?
 As a working Android developer, you often have to create and implement apps where you are responsible for designing and planning the steps you need to take to create a production-ready app.
 
-##Learning objectives
+## Learning objectives
 - Use MediaPlayer/Exoplayer to display videos.
 - Work with widget
 - Leverage a third-party library in the app.
