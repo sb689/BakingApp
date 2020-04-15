@@ -1,5 +1,5 @@
 ## Project Overview
-This is a baking receipe application developed for android platform as part of an online course. User can select a recipe and see video-guided steps for how to complete it. This is a production-ready state app, which involves finding and handling error cases, adding accessibility features, adding a widget, and adding a library.
+This is a baking receipe application developed for android platform as part of an online course. User can select a recipe and watch video-guided steps to complete it. This is a production-ready state app, which involves finding and handling error cases, adding accessibility features, adding a widget, exploring libraries.
 
 ## Requirements
 - App should display recipes from provided network resource.
@@ -17,7 +17,6 @@ As a working Android developer, you often have to create and implement apps wher
 
 ## Learning objectives
 - Use MediaPlayer/Exoplayer to display videos.
-- Handle error cases in Android.
 - Work with widget
 - Leverage a third-party library in the app.
 - Use Fragments to create a responsive design that works on phones and tablets.
