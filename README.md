@@ -1,5 +1,5 @@
 ## Project Overview
-This is a baking recipe application developed for the Android platform as part of an online course. Users can select a recipe and watch video-guided steps to complete it. This is a production-ready state app, which involves finding and handling error cases, adding accessibility features, adding a widget, exploring libraries.
+This is a baking recipe application developed for the Android platform as part of an online course. Users can select a recipe and watch video-guided steps to complete it. This is a production-ready state app, which involves finding and handling error cases, adding accessibility features, adding a widget, exploring libraries. Built this project while working on Udacity Android developer nanodegree.
 
 ## Requirements
 - The app should display recipes from a provided network resource.
