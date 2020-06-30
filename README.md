@@ -1,3 +1,9 @@
+## Application Overview
+
+![Alt text](/screenshots/Screenshot_1593550514.png?raw=true "main_screen") ![Alt text](/screenshots/Screenshot_1593550525.png?raw=true "detail_screen") ![Alt text](/screenshots/Screenshot_1593550533.png?raw=true "main_screen") 
+![Alt text](/screenshots/Screenshot_1593550541.png?raw=true "main_screen") ![Alt text](/screenshots/Screenshot_1593550639.png?raw=true "main_screen") 
+
+
 ## Project Overview
 This is a baking recipe application developed for the Android platform as part of an online course. Users can select a recipe and watch video-guided steps to complete it. This is a production-ready state app, which involves finding and handling error cases, adding accessibility features, adding a widget, exploring libraries.
 
