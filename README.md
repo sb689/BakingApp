@@ -19,7 +19,7 @@
   	<td><img src="/screenshots/Screenshot_1593550541.png" width=270 height=480></td>
      <td><img src="/screenshots/Screenshot_1593550639.png" width=270 height=480></td>
   </tr>
-   <tr>Tablet view of a recipe</td>
+   <td>Tablet view of a recipe</td>
   </tr>
   <tr>
   	<td><img src="/screenshots/Screenshot_1593567853.png" ></td>
