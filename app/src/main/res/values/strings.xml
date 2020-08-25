@@ -4,16 +4,16 @@
     <string name="card_view_recipe_button">Get Recipe</string>
     <string name="card_view_servings_label">Servings:</string>
     <string name="network_error_message">Error occurred. Please try later!!!!</string>
-    <string name="bundle_extra_recipe_obj">bundle_extra_recipe_obj</string>
+    <string name="bundle_extra_recipe_obj">com.example.baking.app.bundle_extra_recipe_obj</string>
 <!--    below two keys has been used in RecipeWidgetService too-->
     <string name="shared_pref_id">com.example.bakingApp.sharedPref</string>
     <string name="shared_pref_recipe_key">shared_pref_recipe_key</string>
 
 <!--    RecipeDetailActivity and StepDetailActivity-->
-    <string name="bundle_extra_key">extra_key</string>
-    <string name="bundle_extra_value_ingredient">bundle_v_ingredient</string>
-    <string name="bundle_extra_value_step">bundle_v_step</string>
-    <string name="bundle_extra_step_position">step_position</string>
+    <string name="bundle_extra_recipe_step_key">com.example.baking.app.extra_key</string>
+    <string name="bundle_extra_value_ingredient">com.example.baking.app.bundle_v_ingredient</string>
+    <string name="bundle_extra_value_step">com.example.baking.app.bundle_v_step</string>
+    <string name="bundle_extra_step_position">com.example.baking.app.step_position</string>
 
 <!--    Ingredients fragment-->
     <string name="ingredients_title">Ingredients</string>

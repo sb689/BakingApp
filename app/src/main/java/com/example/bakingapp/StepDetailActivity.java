@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -38,17 +37,18 @@ public class StepDetailActivity extends AppCompatActivity
 
         if(savedInstanceState == null) {
             Intent intent = getIntent();
-            Bundle bundle = intent.getExtras();
-            mRecipe = bundle.getParcelable(getString(R.string.bundle_extra_recipe_obj));
+            if(intent.hasExtra(getString(R.string.bundle_extra_recipe_obj))) {
+                Bundle bundle = intent.getExtras();
+                mRecipe = bundle.getParcelable(getString(R.string.bundle_extra_recipe_obj));
 
-            String key = intent.getStringExtra(getString(R.string.bundle_extra_key));
+                String key = intent.getStringExtra(getString(R.string.bundle_extra_recipe_step_key));
 
-            if (key.equals(getString(R.string.bundle_extra_value_ingredient))) {
-                showIngredientDetail();
-            }
-            else if (key.equals(getString(R.string.bundle_extra_value_step))) {
-                mStepPosition = bundle.getInt(getString(R.string.bundle_extra_step_position));
-                showStepDetail();
+                if (key.equals(getString(R.string.bundle_extra_value_ingredient))) {
+                    showIngredientDetail();
+                } else if (key.equals(getString(R.string.bundle_extra_value_step))) {
+                    mStepPosition = bundle.getInt(getString(R.string.bundle_extra_step_position));
+                    showStepDetail();
+                }
             }
 
         }else{

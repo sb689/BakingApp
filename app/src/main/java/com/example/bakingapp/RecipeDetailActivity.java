@@ -80,7 +80,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
             Intent intent = new Intent(this, StepDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.bundle_extra_recipe_obj), mRecipe);
-            bundle.putString(getString(R.string.bundle_extra_key), getString(R.string.bundle_extra_value_ingredient));
+            bundle.putString(getString(R.string.bundle_extra_recipe_step_key), getString(R.string.bundle_extra_value_ingredient));
             intent.putExtras(bundle);
             startActivity(intent);
         }else{
@@ -97,7 +97,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
             Intent intent = new Intent(this, StepDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.bundle_extra_recipe_obj), mRecipe);
-            bundle.putString(getString(R.string.bundle_extra_key), getString(R.string.bundle_extra_value_step));
+            bundle.putString(getString(R.string.bundle_extra_recipe_step_key),
+                    getString(R.string.bundle_extra_value_step));
             bundle.putInt(getString(R.string.bundle_extra_step_position), position);
             intent.putExtras(bundle);
             startActivity(intent);

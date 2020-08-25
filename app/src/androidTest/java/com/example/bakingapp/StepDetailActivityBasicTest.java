@@ -39,7 +39,7 @@ public class StepDetailActivityBasicTest {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(targetContext.getString(R.string.bundle_extra_recipe_obj), recipe);
                     bundle.putInt(targetContext.getString(R.string.bundle_extra_step_position), 0);
-                    bundle.putString(targetContext.getString(R.string.bundle_extra_key), targetContext.getString(R.string.bundle_extra_value_step));
+                    bundle.putString(targetContext.getString(R.string.bundle_extra_recipe_step_key), targetContext.getString(R.string.bundle_extra_value_step));
                     result.putExtras(bundle);
 
                     return result;
