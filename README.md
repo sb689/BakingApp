@@ -38,7 +38,7 @@ This Android application helps users to select a recipe and view instruction vid
 ## Requirements
 - The app should display recipes from a provided network resource.
 - The app should allow navigation between individual recipes and recipe steps.
-- Uses RecyclerView and can handle recipe steps that include videos or images.
+- Uses RecyclerView to display list.
 - Uses Master-Detail Flow to display recipe steps and navigation between them.
 - Implements Exoplayer to display videos.
 - Properly initializes and releases video assets when appropriate.
@@ -46,6 +46,7 @@ This Android application helps users to select a recipe and view instruction vid
 - Has a companion home screen widget. The widget displays the ingredient
  list for the desired recipe.
 - Use Fragments to create a responsive design that works on phones and tablets.
+
 
 
 
