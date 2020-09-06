@@ -42,8 +42,8 @@ public class IngredientsFragment extends Fragment {
         mDataBinding.rvIngredientDetail.setLayoutManager(manager);
         mDataBinding.rvIngredientDetail.setHasFixedSize(true);
 
-        View rootView = mDataBinding.getRoot();
+       return mDataBinding.getRoot();
 
-        return rootView;
+
     }
 }

@@ -17,21 +17,15 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     private static final String TAG = StepsAdapter.class.getName();
     private Step[] mSteps;
     private StepClickListener mStepListener;
-    private Context mContext;
-
-    public Step[] getmSteps() {
-        return mSteps;
-    }
 
     public void setmSteps(Step[] mSteps) {
         this.mSteps = mSteps;
         notifyDataSetChanged();
     }
 
-    public StepsAdapter(Step[] steps, StepClickListener listener, Context context ) {
+    public StepsAdapter(Step[] steps, StepClickListener listener) {
         mSteps = steps;
         mStepListener = listener;
-        mContext = context;
     }
 
     public interface StepClickListener{
@@ -78,7 +72,10 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
              if(position == 0){
                  text = mSteps[position].getDescription();
              }else {
-                 text = mDataBinding.getRoot().getContext().getString(R.string.step_description, position, mSteps[position].getShortDescription());
+                 text = mDataBinding.getRoot().getContext().getString(
+                         R.string.step_description,
+                         position,
+                         mSteps[position].getShortDescription());
              }
              mDataBinding.tvStepShortDesc.setText(text);
          }

@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         LoaderManager.getInstance(this).initLoader(RECIPE_LOADER_ID, null, this);
     }
 
+
     private void showErrorMessage()
     {
         mRecyclerView.setVisibility(View.INVISIBLE);

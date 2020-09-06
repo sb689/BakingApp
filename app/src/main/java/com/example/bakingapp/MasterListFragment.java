@@ -24,14 +24,6 @@ public class MasterListFragment extends Fragment implements StepsAdapter.StepCli
     private IngredientsClickedListener mIngredientListener;
     private StepClickedListenerForward mStepListenerForward;
 
-    public Recipe getmRecipe() {
-        return mRecipe;
-    }
-
-    public void setmRecipe(Recipe recipe) {
-        this.mRecipe = recipe;
-    }
-
     public MasterListFragment() {
         // Required empty public constructor
     }
@@ -69,7 +61,7 @@ public class MasterListFragment extends Fragment implements StepsAdapter.StepCli
 
         mRecipe = RecipeDetailActivity.getRecipe();
 
-        StepsAdapter stepsAdapter = new StepsAdapter(mRecipe.getSteps(), this, getContext());
+        StepsAdapter stepsAdapter = new StepsAdapter(mRecipe.getSteps(), this);
 
         binding.rvIngredientSteps.setAdapter(stepsAdapter);
 
