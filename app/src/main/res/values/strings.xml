@@ -28,6 +28,7 @@
     <string name="bundle_exoplayer_position">exoplayer_position</string>
     <string name="bundle_exoplayer_state">exoplayer_state</string>
 
+
 <!--    Widget-->
     <string name="appwidget_text">Displays ingredients list for a recipe</string>
     <string name="add_widget">Add widget</string>

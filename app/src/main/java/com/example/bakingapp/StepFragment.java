@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.bakingapp.databinding.FragmentStepBinding;
+import com.example.bakingapp.model.Recipe;
 import com.example.bakingapp.model.Step;
 import com.google.android.exoplayer2.ExoPlayer;
 
@@ -20,10 +21,10 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Log;
 import com.google.android.exoplayer2.util.Util;
 
 
@@ -31,9 +32,11 @@ import com.google.android.exoplayer2.util.Util;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StepFragment extends Fragment implements ExoPlayer.EventListener {
+public class StepFragment extends Fragment {
 
     private static final String TAG = StepFragment.class.getName();
+    private static final String STEP_POSITION_KEY = "step_position";
+    private static final String RECIPE_KEY = "recipe_key";
 
 
     private FragmentStepBinding mDataBinding;
@@ -42,13 +45,20 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
     private PlayerView mPlayerView;
     private long mPlayerPosition = 0L;
     private boolean mPlayerState = true;
-
-    public void setmStep(Step mStep) {
-        this.mStep = mStep;
-    }
+    private int mStepPosition;
+    private Recipe mRecipe;
 
     public StepFragment() {
         // Required empty public constructor
+    }
+
+    public static StepFragment newInstance(int position, Recipe recipe){
+        StepFragment fragment = new StepFragment();
+        Bundle args = new Bundle();
+        args.putInt(STEP_POSITION_KEY, position);
+        args.putParcelable(RECIPE_KEY, recipe);
+        fragment.setArguments(args);
+        return fragment;
     }
 
 
@@ -60,13 +70,39 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         mDataBinding = FragmentStepBinding.inflate(inflater,container,false);
         mPlayerView = mDataBinding.videoExoView;
 
+        if(getArguments().containsKey(STEP_POSITION_KEY))
+        {
+            mStepPosition = getArguments().getInt(STEP_POSITION_KEY);
+        }
+        if(getArguments().containsKey(RECIPE_KEY))
+        {
+            mRecipe = getArguments().getParcelable(RECIPE_KEY);
+        }
+
         if(savedInstanceState != null){
-            mStep = savedInstanceState.getParcelable(getString(R.string.bundle_step));
+            mStepPosition = savedInstanceState.getInt(STEP_POSITION_KEY);
             mPlayerPosition = savedInstanceState.getLong(getString(R.string.bundle_exoplayer_position));
             mPlayerState = savedInstanceState.getBoolean(getString(R.string.bundle_exoplayer_state));
         }
-        mDataBinding.tvStepDetailDescription.setText(mStep.getDescription());
+
+        mStep = mRecipe.getSteps()[mStepPosition];
+
+        mDataBinding.buttonNextStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onForwardClicked();
+            }
+        });
+        mDataBinding.buttonPrevStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackClicked();
+            }
+        });
+
+        checkButtonStates(mStepPosition);
         return mDataBinding.getRoot();
+
     }
 
 
@@ -76,34 +112,37 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
                 mStep.getThumbnailURL() == null){
             return;
         }
-        if(mSimpleExoPlayer == null) {
-           // mPlayerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
-            String recipeUriStr = mStep.getVideoURL();
-            if(recipeUriStr.isEmpty()){
-                recipeUriStr = mStep.getThumbnailURL();
-            }
-            if(recipeUriStr.isEmpty())
-                return;
+        mDataBinding.tvStepDetailDescription.setText(mStep.getDescription());
 
-            if (mSimpleExoPlayer == null){
-
-                Uri recipeUri = Uri.parse(recipeUriStr);
-
-                DefaultTrackSelector trackSelector = new DefaultTrackSelector(getContext());
-                trackSelector.setParameters(
-                        trackSelector.buildUponParameters().setMaxVideoSizeSd());
-                SimpleExoPlayer.Builder builder = new SimpleExoPlayer.Builder(getContext());
-                builder.setTrackSelector(trackSelector);
-                mSimpleExoPlayer = builder.build();
-
-                MediaSource mediaSource = buildMediaSource(recipeUri);
-                mSimpleExoPlayer.prepare(mediaSource);
-                mSimpleExoPlayer.setPlayWhenReady(mPlayerState);
-                mSimpleExoPlayer.seekTo(mPlayerPosition);
-                mPlayerView.setPlayer(mSimpleExoPlayer);
-            }
+        //get recipeUri
+        String recipeUriStr = mStep.getVideoURL();
+        if(recipeUriStr.isEmpty()){
+            recipeUriStr = mStep.getThumbnailURL();
         }
+
+        if(recipeUriStr.isEmpty())
+            return;
+        Uri recipeUri = Uri.parse(recipeUriStr);
+
+        if(mSimpleExoPlayer == null) {
+
+            DefaultTrackSelector trackSelector = new DefaultTrackSelector(getContext());
+            trackSelector.setParameters(
+                    trackSelector.buildUponParameters().setMaxVideoSizeSd());
+            SimpleExoPlayer.Builder builder = new SimpleExoPlayer.Builder(getContext());
+            builder.setTrackSelector(trackSelector);
+            mSimpleExoPlayer = builder.build();
+        }
+
+        MediaSource mediaSource = buildMediaSource(recipeUri);
+        mSimpleExoPlayer.prepare(mediaSource);
+        mSimpleExoPlayer.setPlayWhenReady(mPlayerState);
+        mSimpleExoPlayer.seekTo(mPlayerPosition);
+        mPlayerView.setPlayer(mSimpleExoPlayer);
+
     }
+
+
 
 
     private MediaSource buildMediaSource(Uri recipeUri){
@@ -114,9 +153,50 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener {
         return videoSource;
     }
 
+    private void updateVideo(int position){
+
+        if(mSimpleExoPlayer != null){
+            mSimpleExoPlayer.stop(true);
+        }
+        mPlayerState = true;
+        mPlayerPosition = 0L;
+
+        mStep = mRecipe.getSteps()[mStepPosition];
+        checkButtonStates(position);
+        initializePlayer();
+    }
+
+
+    private void checkButtonStates(int position){
+        if((position + 1) > (mRecipe.getSteps().length - 1) ){
+            mDataBinding.buttonNextStep.setVisibility(View.INVISIBLE);
+        }
+        else if(position - 1 < 0){
+            mDataBinding.buttonPrevStep.setVisibility(View.INVISIBLE);
+        }
+        else{
+            mDataBinding.buttonNextStep.setVisibility(View.VISIBLE);
+            mDataBinding.buttonPrevStep.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public void onForwardClicked(){
+        Log.d(TAG,"next button click received");
+        mStepPosition += 1;
+        updateVideo(mStepPosition);
+    }
+
+    public void onBackClicked(){
+
+        mStepPosition -= 1;
+        updateVideo(mStepPosition);
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(getString(R.string.bundle_step), mStep);
+       outState.putInt(STEP_POSITION_KEY, mStepPosition);
+      // outState.putParcelable(RECIPE_KEY, mRecipe);
         if(Util.SDK_INT < Build.VERSION_CODES.P) {
             savePlayerState();
         }

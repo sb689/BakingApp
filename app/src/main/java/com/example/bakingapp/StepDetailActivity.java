@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.example.bakingapp.databinding.ActivityStepDetailBinding;
 import com.example.bakingapp.model.Recipe;
@@ -56,7 +55,6 @@ public class StepDetailActivity extends AppCompatActivity
             mRecipe = savedInstanceState.getParcelable(getString(R.string.bundle_extra_recipe_obj));
 
         }
-        checkButtonStates(mStepPosition);
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar!= null){
@@ -78,19 +76,17 @@ public class StepDetailActivity extends AppCompatActivity
     private void showStepDetail(){
 
         Step step = mRecipe.getSteps()[mStepPosition];
-        StepFragment stepFragment = new StepFragment();
-        stepFragment.setmStep(step);
+        StepFragment stepFragment = StepFragment.newInstance(mStepPosition, mRecipe);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.container_steps, stepFragment)
                 .commit();
-        checkButtonStates(mStepPosition);
+
     }
 
     public void showIngredientDetail()
     {
-        hideButtons();
         IngredientsFragment ingredientsFragment = new IngredientsFragment();
         ingredientsFragment.setmIngredient(mRecipe.getIngredients());
 
@@ -100,51 +96,7 @@ public class StepDetailActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void updateStepFragment(int position){
 
-        Step step = mRecipe.getSteps()[mStepPosition];
-        StepFragment stepFragment = new StepFragment();
-        stepFragment.setmStep(step);
-
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container_steps, stepFragment)
-                .commit();
-        checkButtonStates(position);
-
-    }
-
-    private void checkButtonStates(int position){
-        if((position + 1) > (mRecipe.getSteps().length - 1) ){
-            mDataBinding.buttonNextStep.setVisibility(View.GONE);
-        }
-        else if(position - 1 < 0){
-            mDataBinding.buttonPrevStep.setVisibility(View.GONE);
-        }
-        else{
-            mDataBinding.buttonNextStep.setVisibility(View.VISIBLE);
-            mDataBinding.buttonPrevStep.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void onForwardClicked(View view){
-
-        mStepPosition += 1;
-        updateStepFragment(mStepPosition);
-    }
-
-    public void onBackClicked(View view){
-
-       mStepPosition -= 1;
-       updateStepFragment(mStepPosition);
-    }
-
-
-    private void hideButtons(){
-        mDataBinding.buttonNextStep.setVisibility(View.GONE);
-        mDataBinding.buttonPrevStep.setVisibility(View.GONE);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
