@@ -102,7 +102,7 @@ public class StepFragment extends Fragment {
                        onBackClicked();
                    }
                });
-               checkButtonStates(mStepPosition);
+
            }
         }
 
@@ -111,8 +111,8 @@ public class StepFragment extends Fragment {
             mPlayerPosition = savedInstanceState.getLong(getString(R.string.bundle_exoplayer_position));
             mPlayerState = savedInstanceState.getBoolean(getString(R.string.bundle_exoplayer_state));
         }
-
         mStep = mRecipe.getSteps()[mStepPosition];
+        checkButtonStates(mStepPosition);
 
         return mDataBinding.getRoot();
 
