@@ -37,6 +37,8 @@ public class StepFragment extends Fragment {
     private static final String TAG = StepFragment.class.getName();
     private static final String STEP_POSITION_KEY = "step_position";
     private static final String RECIPE_KEY = "recipe_key";
+    private static final String TABLET_VIEW_KEY = "tablet_view_key";
+
 
 
     private FragmentStepBinding mDataBinding;
@@ -47,16 +49,18 @@ public class StepFragment extends Fragment {
     private boolean mPlayerState = true;
     private int mStepPosition;
     private Recipe mRecipe;
+    private boolean mTabletView;
 
     public StepFragment() {
         // Required empty public constructor
     }
 
-    public static StepFragment newInstance(int position, Recipe recipe){
+    public static StepFragment newInstance(int position, Recipe recipe, boolean isTabletView){
         StepFragment fragment = new StepFragment();
         Bundle args = new Bundle();
         args.putInt(STEP_POSITION_KEY, position);
         args.putParcelable(RECIPE_KEY, recipe);
+        args.putBoolean(TABLET_VIEW_KEY, isTabletView);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,6 +82,29 @@ public class StepFragment extends Fragment {
         {
             mRecipe = getArguments().getParcelable(RECIPE_KEY);
         }
+        if(getArguments().containsKey(TABLET_VIEW_KEY))
+        {
+           mTabletView = getArguments().getBoolean(TABLET_VIEW_KEY);
+           if(mTabletView) {
+                mDataBinding.buttonNextStep.setVisibility(View.INVISIBLE);
+               mDataBinding.buttonPrevStep.setVisibility(View.INVISIBLE);
+           }
+           else{
+               mDataBinding.buttonNextStep.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       onForwardClicked();
+                   }
+               });
+               mDataBinding.buttonPrevStep.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       onBackClicked();
+                   }
+               });
+               checkButtonStates(mStepPosition);
+           }
+        }
 
         if(savedInstanceState != null){
             mStepPosition = savedInstanceState.getInt(STEP_POSITION_KEY);
@@ -87,20 +114,6 @@ public class StepFragment extends Fragment {
 
         mStep = mRecipe.getSteps()[mStepPosition];
 
-        mDataBinding.buttonNextStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onForwardClicked();
-            }
-        });
-        mDataBinding.buttonPrevStep.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackClicked();
-            }
-        });
-
-        checkButtonStates(mStepPosition);
         return mDataBinding.getRoot();
 
     }
@@ -168,6 +181,10 @@ public class StepFragment extends Fragment {
 
 
     private void checkButtonStates(int position){
+        if(mTabletView)
+        {
+            return;
+        }
         if((position + 1) > (mRecipe.getSteps().length - 1) ){
             mDataBinding.buttonNextStep.setVisibility(View.INVISIBLE);
         }

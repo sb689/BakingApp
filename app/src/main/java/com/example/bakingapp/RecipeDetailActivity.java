@@ -131,8 +131,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
     private void showStepDetail(int position){
 
         mStepPosition = position;
-        Step step = mRecipe.getSteps()[position];
-        StepFragment stepFragment = StepFragment.newInstance(position, mRecipe);
+        StepFragment stepFragment = StepFragment.newInstance(position, mRecipe, true);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()

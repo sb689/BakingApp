@@ -53,7 +53,7 @@
         android:background="@drawable/ic_chevron_right_24px"
         android:contentDescription="@string/next_step_button_content_desc"
         android:layout_gravity="bottom|end"
-        android:onClick="onForwardClicked"/>
+     />
 
     <ImageButton
         android:id="@+id/button_prev_step"
@@ -62,6 +62,6 @@
         android:background="@drawable/ic_chevron_left_24px"
         android:contentDescription="@string/prev_step_button_content_desc"
         android:layout_gravity="bottom|start"
-        android:onClick="onBackClicked"/>
+       />
 </FrameLayout>
 </layout>

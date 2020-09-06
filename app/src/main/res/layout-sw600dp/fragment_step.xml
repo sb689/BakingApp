@@ -3,9 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,4 +42,24 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
+
+    <ImageButton
+        android:id="@+id/button_next_step"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_chevron_right_24px"
+        android:contentDescription="@string/next_step_button_content_desc"
+        android:layout_gravity="bottom|end"
+       />
+
+    <ImageButton
+        android:id="@+id/button_prev_step"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/ic_chevron_left_24px"
+        android:contentDescription="@string/prev_step_button_content_desc"
+        android:layout_gravity="bottom|start"
+       />
+
+</FrameLayout>
 </layout>

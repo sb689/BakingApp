@@ -76,7 +76,7 @@ public class StepDetailActivity extends AppCompatActivity
     private void showStepDetail(){
 
         Step step = mRecipe.getSteps()[mStepPosition];
-        StepFragment stepFragment = StepFragment.newInstance(mStepPosition, mRecipe);
+        StepFragment stepFragment = StepFragment.newInstance(mStepPosition, mRecipe, false);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()

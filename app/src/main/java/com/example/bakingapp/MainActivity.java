@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.espresso.IdlingResource;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -44,11 +45,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int RECIPE_LOADER_ID = 14;
     public static final int GRID_SPAN_COUNT = 3;
 
-    private ActivityMainBinding mDataBinding;
+    private static ActivityMainBinding mDataBinding;
     private RecyclerView mRecyclerView;
     private RecipeAdapter mRecipeAdapter;
 
-    @Nullable private SimpleIdlingResource mIdlingResource;
+    @Nullable private static SimpleIdlingResource mIdlingResource;
 
     @VisibleForTesting
     @NonNull
@@ -118,54 +119,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<List<Recipe>> onCreateLoader(int id, @Nullable Bundle args) {
 
         Log.v(TAG, "--------------------------inside onCreateLoader : " );
-        return new AsyncTaskLoader<List<Recipe>>(this) {
-
-            List<Recipe> mRecipes = null;
-
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                if(mIdlingResource != null){
-                    mIdlingResource.setIdleState(false);
-                }
-                if(mRecipes != null){
-                    deliverResult(mRecipes);
-                }else {
-                    mDataBinding.pbLoading.setVisibility(View.VISIBLE);
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public void deliverResult(@Nullable List<Recipe> data) {
-                mRecipes = data;
-                super.deliverResult(data);
-
-            }
-
-            @Nullable
-            @Override
-            public List<Recipe> loadInBackground() {
-
-                ArrayList<Recipe> recipes;
-                try {
-                    URL recipeUrl = NetworkUtils.getRecipeUrl();
-                    String recipeResponseJson = NetworkUtils.getResponseFromHttpUrl(recipeUrl);
-                    //Log.v(TAG, "--------------------------recipeResponse : " + recipeResponseJson);
-
-                    Gson gson = new Gson();
-                    Type recipeListType = new TypeToken<ArrayList<Recipe>>(){}.getType();
-                    recipes = gson.fromJson(recipeResponseJson, recipeListType);
-
-                    Log.v(TAG, "--------------------------received recipes array, length :" + recipes.size());
-                    return recipes;
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-        };
+        return new FetchData(this);
     }
 
             @Override
@@ -187,6 +141,60 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             }
 
+
+    private static class FetchData extends AsyncTaskLoader<List<Recipe>>{
+
+        public FetchData(@NonNull Context context) {
+            super(context);
+        }
+        List<Recipe> mRecipes = null;
+
+        @Override
+        protected void onStartLoading() {
+            super.onStartLoading();
+            if(mIdlingResource != null){
+                mIdlingResource.setIdleState(false);
+            }
+            if(mRecipes != null){
+                Log.d(TAG, "delivering from memory");
+                deliverResult(mRecipes);
+            }else {
+                mDataBinding.pbLoading.setVisibility(View.VISIBLE);
+                Log.d(TAG, "delivering from network");
+                forceLoad();
+            }
+        }
+
+        @Override
+        public void deliverResult(@Nullable List<Recipe> data) {
+            mRecipes = data;
+            super.deliverResult(data);
+
+        }
+
+        @Nullable
+        @Override
+        public List<Recipe> loadInBackground() {
+
+            ArrayList<Recipe> recipes;
+            try {
+                URL recipeUrl = NetworkUtils.getRecipeUrl();
+                String recipeResponseJson = NetworkUtils.getResponseFromHttpUrl(recipeUrl);
+                //Log.v(TAG, "--------------------------recipeResponse : " + recipeResponseJson);
+
+                Gson gson = new Gson();
+                Type recipeListType = new TypeToken<ArrayList<Recipe>>(){}.getType();
+                recipes = gson.fromJson(recipeResponseJson, recipeListType);
+
+                Log.v(TAG, "--------------------------received recipes array, length :" + recipes.size());
+                return recipes;
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+    }
 
     @Override
     public void RecipeClicked(int position) {
@@ -212,6 +220,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         editor.apply();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+       // LoaderManager.getInstance(this).destroyLoader(RECIPE_LOADER_ID);
+    }
 
 }
 
