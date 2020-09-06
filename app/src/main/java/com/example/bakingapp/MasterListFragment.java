@@ -23,6 +23,7 @@ public class MasterListFragment extends Fragment implements StepsAdapter.StepCli
     private Recipe mRecipe;
     private IngredientsClickedListener mIngredientListener;
     private StepClickedListenerForward mStepListenerForward;
+    private FragmentMasterListBinding mBinding;
 
     public MasterListFragment() {
         // Required empty public constructor
@@ -57,22 +58,19 @@ public class MasterListFragment extends Fragment implements StepsAdapter.StepCli
                              Bundle savedInstanceState) {
 
 
-        FragmentMasterListBinding binding = FragmentMasterListBinding.inflate(inflater, container, false);
-
+        mBinding = FragmentMasterListBinding.inflate(inflater, container, false);
         mRecipe = RecipeDetailActivity.getRecipe();
-
         StepsAdapter stepsAdapter = new StepsAdapter(mRecipe.getSteps(), this);
-
-        binding.rvIngredientSteps.setAdapter(stepsAdapter);
+        mBinding.rvIngredientSteps.setAdapter(stepsAdapter);
 
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         manager.setReverseLayout(false);
         manager.setOrientation(RecyclerView.VERTICAL);
-        binding.rvIngredientSteps.setLayoutManager(manager);
-        binding.rvIngredientSteps.setHasFixedSize(true);
+        mBinding.rvIngredientSteps.setLayoutManager(manager);
+        mBinding.rvIngredientSteps.setHasFixedSize(true);
 
-        binding.tvIngredientsTitle.setText(getString(R.string.ingredients_title));
-        binding.tvIngredientsTitle.setOnClickListener(new View.OnClickListener() {
+        mBinding.tvIngredientsTitle.setText(getString(R.string.ingredients_title));
+        mBinding.tvIngredientsTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mIngredientListener.ingredientsClicked();
@@ -80,12 +78,22 @@ public class MasterListFragment extends Fragment implements StepsAdapter.StepCli
         });
 
         stepsAdapter.setmSteps(mRecipe.getSteps());
-        View rootView = binding.getRoot();
+        View rootView = mBinding.getRoot();
         return rootView;
     }
 
     @Override
     public void stepClicked(int position) {
         mStepListenerForward.stepClickedForward(position);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mIngredientListener = null;
+        mRecipe = null;
+        mStepListenerForward = null;
+        mBinding.rvIngredientSteps.setAdapter(null);
+
     }
 }

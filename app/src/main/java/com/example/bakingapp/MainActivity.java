@@ -214,16 +214,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void saveRecipe(Recipe recipe){
         Gson gson = new Gson();
         String recipeStr = gson.toJson(recipe);
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_pref_id) , this.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.shared_pref_id),
+                MainActivity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.shared_pref_recipe_key), recipeStr);
         editor.apply();
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       // LoaderManager.getInstance(this).destroyLoader(RECIPE_LOADER_ID);
+        mRecipeAdapter = null;
+        mRecyclerView.setAdapter(null);
+        mRecyclerView = null;
+        mDataBinding = null;
+
     }
 
 }

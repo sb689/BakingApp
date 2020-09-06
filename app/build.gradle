@@ -50,5 +50,5 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-core:2.11.2'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.11.2'
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
 }

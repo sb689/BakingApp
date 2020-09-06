@@ -141,8 +141,7 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
 
     private void showIngredientDetail()
     {
-        IngredientsFragment ingredientsFragment = new IngredientsFragment();
-        ingredientsFragment.setmIngredient(mRecipe.getIngredients());
+        IngredientsFragment ingredientsFragment = IngredientsFragment.newInstance(mRecipe);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()

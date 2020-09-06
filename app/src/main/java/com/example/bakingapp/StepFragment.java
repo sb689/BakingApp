@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.example.bakingapp.databinding.FragmentStepBinding;
 import com.example.bakingapp.model.Recipe;
 import com.example.bakingapp.model.Step;
-import com.google.android.exoplayer2.ExoPlayer;
 
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -276,4 +275,12 @@ public class StepFragment extends Fragment {
         mSimpleExoPlayer = null;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mDataBinding = null;
+        mStep = null;
+        mPlayerView = null;
+        mRecipe = null;
+    }
 }
