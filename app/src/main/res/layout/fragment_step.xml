@@ -2,66 +2,78 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
 
-    >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:context=".StepFragment"
-            >
-
-    <!-- TODO: Update blank fragment layout -->
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:layout_height="@dimen/exoplayer_height"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:id="@+id/video_exo_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:fastforward_increment="2000"
-        app:rewind_increment="2000"
-        app:resize_mode="fit"
-        />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
 
-    <TextView
+        <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_step_detail_description"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/video_exo_view"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+            >
 
 
-    <ImageButton
-        android:id="@+id/button_next_step"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_chevron_right_24px"
-        android:contentDescription="@string/next_step_button_content_desc"
-        android:layout_gravity="bottom|end"
-     />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".StepFragment"
 
-    <ImageButton
-        android:id="@+id/button_prev_step"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:background="@drawable/ic_chevron_left_24px"
-        android:contentDescription="@string/prev_step_button_content_desc"
-        android:layout_gravity="bottom|start"
-       />
-</FrameLayout>
+        >
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/video_exo_view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/exoplayer_height"
+            app:fastforward_increment="2000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:resize_mode="fit"
+            app:rewind_increment="2000"
+
+            />
+
+        <TextView
+            android:id="@+id/tv_step_detail_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:textSize="18sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/video_exo_view" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+
+            <ImageButton
+                android:id="@+id/button_next_step"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_chevron_right_24px"
+                android:contentDescription="@string/next_step_button_content_desc"
+                android:layout_gravity="bottom|end"
+              />
+
+
+            <ImageButton
+                android:id="@+id/button_prev_step"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/ic_chevron_left_24px"
+                android:contentDescription="@string/prev_step_button_content_desc"
+                android:layout_gravity="bottom|start"
+                />
+
+
+    </FrameLayout>
+
 </layout>
