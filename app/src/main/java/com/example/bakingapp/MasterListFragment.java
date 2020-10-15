@@ -94,6 +94,7 @@ public class MasterListFragment extends Fragment implements StepsAdapter.StepCli
         mRecipe = null;
         mStepListenerForward = null;
         mBinding.rvIngredientSteps.setAdapter(null);
+        mBinding = null;
 
     }
 }

@@ -3,8 +3,10 @@ package com.example.bakingapp.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -12,6 +14,7 @@ import android.widget.RemoteViews;
 import com.example.bakingapp.R;
 import com.example.bakingapp.RecipeDetailActivity;
 import com.example.bakingapp.model.Recipe;
+import com.google.gson.Gson;
 
 
 /**
@@ -40,7 +43,12 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
 
         //set intent
         Intent appIntent = new Intent(context, RecipeDetailActivity.class);
-        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                appIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
         views.setPendingIntentTemplate(R.id.listView_ingredients_widget, appPendingIntent);
         // Handle empty gardens
         views.setEmptyView(R.id.listView_ingredients_widget, R.id.tv_listView_empty_text);
@@ -50,25 +58,37 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-
-//        for (int appWidgetId : appWidgetIds) {
-//            updateAppWidget(context, appWidgetManager, appWidgetId);
-//        }
-        RecipeWidgetService.startActionUpdateWidget(context);
+        RecipeWidgetProvider.updateRecipeWidget(context, appWidgetManager, appWidgetIds);
     }
 
-    public static void updateRecipeWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds,
-                                          Recipe recipe){
+    public static void updateRecipeWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
 
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.shared_pref_id), context.MODE_PRIVATE);
+        String recipeStr = sharedPref.getString(context.getString(R.string.shared_pref_recipe_key), "");
+        Gson gson = new Gson();
+        Recipe recipe = gson.fromJson(recipeStr, Recipe.class);
+        System.out.println("updateRecipeWidget called, recipe is : "+ recipe.getName());
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId, recipe);
         }
     }
 
+    public static void updateRecipeWidgetHelper(Context context){
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, RecipeWidgetProvider.class));
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listView_ingredients_widget);
+        RecipeWidgetProvider.updateRecipeWidget(context, appWidgetManager, appWidgetIds);
+    }
+
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        RecipeWidgetService.startActionUpdateWidget(context);
+
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+        int[] appWidgetIds = {appWidgetId};
+        RecipeWidgetProvider.updateRecipeWidget(context, appWidgetManager, appWidgetIds);
+
     }
 
     @Override

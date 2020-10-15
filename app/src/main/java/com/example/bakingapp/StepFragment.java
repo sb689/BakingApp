@@ -278,9 +278,11 @@ public class StepFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mDataBinding = null;
+
         mStep = null;
         mPlayerView = null;
         mRecipe = null;
+        mDataBinding = null;
     }
+
 }

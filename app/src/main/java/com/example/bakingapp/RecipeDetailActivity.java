@@ -15,8 +15,7 @@ import android.widget.LinearLayout;
 
 import com.example.bakingapp.databinding.ActivityRecipeDetailBinding;
 import com.example.bakingapp.model.Recipe;
-import com.example.bakingapp.model.Step;
-import com.example.bakingapp.widget.RecipeWidgetService;
+import com.example.bakingapp.widget.RecipeWidgetProvider;
 
 
 public class RecipeDetailActivity extends AppCompatActivity implements MasterListFragment.IngredientsClickedListener,
@@ -69,7 +68,8 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
         }catch (Exception e){
             Log.d(TAG, e.getMessage());
         }
-        RecipeWidgetService.startActionUpdateWidget(this);
+
+        RecipeWidgetProvider.updateRecipeWidgetHelper(this);
     }
 
 
@@ -149,5 +149,10 @@ public class RecipeDetailActivity extends AppCompatActivity implements MasterLis
                 .commit();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRecipe = null;
+        mDataBinding = null;
+    }
 }

@@ -59,6 +59,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
 
     public class StepsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+
+
         private final StepItemBinding mDataBinding;
 
          StepsViewHolder(@NonNull StepItemBinding binding) {
@@ -87,4 +89,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
             mStepListener.stepClicked(position);
         }
     }
+
+
 }

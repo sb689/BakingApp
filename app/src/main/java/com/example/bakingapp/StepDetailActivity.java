@@ -31,9 +31,6 @@ public class StepDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_step_detail);
 
-        boolean isTabletView = getResources().getBoolean(R.bool.isLarge);
-
-
         if(savedInstanceState == null) {
             Intent intent = getIntent();
             if(intent.hasExtra(getString(R.string.bundle_extra_recipe_obj))) {
@@ -75,7 +72,6 @@ public class StepDetailActivity extends AppCompatActivity
 
     private void showStepDetail(){
 
-        Step step = mRecipe.getSteps()[mStepPosition];
         StepFragment stepFragment = StepFragment.newInstance(mStepPosition, mRecipe, false);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -108,4 +104,11 @@ public class StepDetailActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRecipe = null;
+        mDataBinding = null;
+
+    }
 }
